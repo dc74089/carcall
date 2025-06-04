@@ -5,5 +5,5 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-      - "9901:9001"
-      - "9902:9002"
+      - "9901:9901"
+      - "9902:9902"
