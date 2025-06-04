@@ -16,7 +16,7 @@ def twiml():
     twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Start>
-        <Stream url="wss://yourdomain.com:8765/twilio" />
+        <Stream url="wss://carcall.canora.us:9902/twilio" />
     </Start>
     <Say>Connecting you now.</Say>
     <Dial>
