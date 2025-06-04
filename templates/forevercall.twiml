@@ -1,0 +1,9 @@
+<Response>
+  <Start>
+    <Stream url="wss://yourserver.com/twilio-stream" />
+  </Start>
+  <Say>You are connected.</Say>
+  <Dial>
+    <Conference>ForeverCall</Conference>
+  </Dial>
+</Response>
