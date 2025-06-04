@@ -16,7 +16,7 @@ def twiml():
     twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Start>
-        <Stream url="wss://carcall.canora.us:9902/twilio" />
+        <Stream url="wss://carcall.canora.us/ws2/twilio" />
     </Start>
     <Say>Connecting you now.</Say>
     <Dial>
@@ -58,8 +58,8 @@ async def handle_twilio(websocket, path):
 
 # Start both WebSocket servers
 async def start_websocket_servers():
-    server = await websockets.serve(handle_twilio, "0.0.0.0", 9902)
-    pi_server = await websockets.serve(handle_pi, "0.0.0.0", 9901)
+    server = await websockets.serve(handle_twilio, "0.0.0.0", 9902, path="/ws2")
+    pi_server = await websockets.serve(handle_pi, "0.0.0.0", 9901, path="/ws1")
     await asyncio.gather(server.wait_closed(), pi_server.wait_closed())
 
 def run_websocket_servers():
