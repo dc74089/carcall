@@ -58,8 +58,8 @@ async def handle_twilio(websocket, path):
 
 # Start both WebSocket servers
 async def start_websocket_servers():
-    server = await websockets.serve(handle_twilio, "0.0.0.0", 9002, ssl=None, create_protocol=None, ping_interval=None, subprotocols=None)
-    pi_server = await websockets.serve(handle_pi, "0.0.0.0", 9001, ssl=None, create_protocol=None, ping_interval=None)
+    server = await websockets.serve(handle_twilio, "0.0.0.0", 9002)
+    pi_server = await websockets.serve(handle_pi, "0.0.0.0", 9001)
     await asyncio.gather(server.wait_closed(), pi_server.wait_closed())
 
 def run_websocket_servers():
