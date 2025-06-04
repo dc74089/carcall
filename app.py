@@ -57,15 +57,17 @@ async def handle_twilio(websocket, path):
         print("Twilio stream disconnected")
 
 # Start both WebSocket servers
-def start_websocket_servers():
+async def start_websocket_servers():
+    server = await websockets.serve(handle_twilio, "0.0.0.0", 9002, ssl=None, create_protocol=None, ping_interval=None, subprotocols=None)
+    pi_server = await websockets.serve(handle_pi, "0.0.0.0", 9001, ssl=None, create_protocol=None, ping_interval=None)
+    await asyncio.gather(server.wait_closed(), pi_server.wait_closed())
+
+def run_websocket_servers():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    server = websockets.serve(handle_twilio, "0.0.0.0", 9002, ssl=None, create_protocol=None, ping_interval=None, subprotocols=None)
-    pi_server = websockets.serve(handle_pi, "0.0.0.0", 9001, ssl=None, create_protocol=None, ping_interval=None)
-    loop.run_until_complete(asyncio.gather(server, pi_server))
+    loop.run_until_complete(start_websocket_servers())
     loop.run_forever()
 
-# Start Flask and WebSocket server in parallel
 if __name__ == "__main__":
-    threading.Thread(target=start_websocket_servers, daemon=True).start()
+    threading.Thread(target=run_websocket_servers, daemon=True).start()
     app.run(host="0.0.0.0", port=80)
