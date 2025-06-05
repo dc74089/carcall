@@ -1,13 +1,10 @@
 import asyncio
 import websockets
 import pyaudio
+import audioop
 
 async def play_audio():
     p = pyaudio.PyAudio()
-    # Explicitly set format to match Twilio's stream:
-    # - 16-bit PCM (paInt16)
-    # - 8kHz sample rate
-    # - 1 channel (mono)
     stream = p.open(
         format=pyaudio.paInt16,
         channels=1,
@@ -20,7 +17,9 @@ async def play_audio():
         print("Connected to server")
         try:
             async for message in websocket:
-                stream.write(message)
+                # Convert mu-law to linear PCM
+                pcm_data = audioop.ulaw2lin(message, 2)  # 2 for 16-bit output
+                stream.write(pcm_data)
         except Exception as e:
             print(f"Error playing audio: {e}")
         finally:
