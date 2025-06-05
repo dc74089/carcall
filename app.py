@@ -22,7 +22,7 @@ def twiml():
     <Start>
         <Stream url="wss://carcall.canora.us/ws2" />
     </Start>
-    <Say>Connecting you now.</Say>
+    <Say>Connecting you to Lower School car line now.</Say>
     <Dial>
         <Conference waitUrl="">ForeverCall</Conference>
     </Dial>
