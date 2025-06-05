@@ -27,8 +27,6 @@ def twiml():
 # -------- WebSocket Server Stuff -------- #
 
 async def handle_pi(websocket, path):
-    if not path.startswith('/ws1'):
-        return  # Reject connections to other paths
     print("Pi connected")
     pi_clients.add(websocket)
     try:
@@ -38,8 +36,6 @@ async def handle_pi(websocket, path):
         pi_clients.remove(websocket)
 
 async def handle_twilio(websocket, path):
-    if not path.startswith('/ws2'):
-        return  # Reject connections to other paths
     print("Twilio stream connected")
     try:
         async for message in websocket:
