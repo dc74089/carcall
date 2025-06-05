@@ -26,7 +26,7 @@ def twiml():
 
 # -------- WebSocket Server Stuff -------- #
 
-async def handle_pi(websocket, path):
+async def handle_pi(websocket, path=""):
     print("Pi connected")
     pi_clients.add(websocket)
     try:
@@ -35,7 +35,7 @@ async def handle_pi(websocket, path):
         print("Pi disconnected")
         pi_clients.remove(websocket)
 
-async def handle_twilio(websocket, path):
+async def handle_twilio(websocket, path=""):
     print("Twilio stream connected")
     try:
         async for message in websocket:
