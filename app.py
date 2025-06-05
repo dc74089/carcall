@@ -24,7 +24,7 @@ def twiml():
     </Start>
     <Say>Connecting you now.</Say>
     <Dial>
-        <Conference>ForeverCall</Conference>
+        <Conference waitUrl="">ForeverCall</Conference>
     </Dial>
 </Response>"""
     return Response(twiml_response, mimetype="text/xml")
