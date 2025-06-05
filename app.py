@@ -1,3 +1,5 @@
+import struct
+
 from flask import Flask, request, Response
 import asyncio
 import websockets
@@ -44,8 +46,15 @@ async def handle_twilio(websocket, path=""):
                 if data.get("event") == "media":
                     payload = data["media"]["payload"]
                     audio = base64.b64decode(payload)
-                    for pi_ws in pi_clients:
-                        await pi_ws.send(audio)
+
+                    # Ensure the audio data is in the correct format
+                    # Twilio sends 16-bit PCM at 8kHz mono
+                    # Convert bytes to 16-bit integers if needed
+                    audio_samples = struct.unpack('<%dh' % (len(audio) // 2), audio)
+                    audio_bytes = struct.pack('<%dh' % len(audio_samples), *audio_samples)
+
+                for pi_ws in pi_clients:
+                        await pi_ws.send(audio_bytes)
             except Exception as e:
                 print(f"Decode error: {e}")
     except Exception as e:
