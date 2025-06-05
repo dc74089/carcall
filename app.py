@@ -42,22 +42,8 @@ async def handle_pi(websocket, path=""):
         pi_clients.remove(websocket)
 
 
-# Add debug file to save a sample of the audio
-def save_debug_audio(audio_data, filename):
-    with wave.open(filename, 'wb') as wav_file:
-        wav_file.setnchannels(1)  # mono
-        wav_file.setsampwidth(2)  # 16-bit
-        wav_file.setframerate(8000)
-        wav_file.writeframes(audio_data)
-
-
-def hex_dump(data, length=32):
-    return binascii.hexlify(data[:length]).decode()
-
-
 async def handle_twilio(websocket, path=""):
     print("Twilio stream connected")
-    sample_count = 0
     try:
         async for message in websocket:
             try:
@@ -66,18 +52,6 @@ async def handle_twilio(websocket, path=""):
                     payload = data["media"]["payload"]
                     audio = base64.b64decode(payload)
 
-                    # Debug information
-                    print(f"\nReceived audio chunk:")
-                    print(f"Length: {len(audio)} bytes")
-                    print(f"First few bytes (hex): {hex_dump(audio)}")
-
-                    # Save every 100th sample for debugging
-                    if sample_count % 100 == 0:
-                        save_debug_audio(audio, f'/app/debug_sample_{sample_count}.wav')
-
-                    sample_count += 1
-
-                    # Try different byte orders
                     try:
                         # Original data
                         for pi_ws in pi_clients:
