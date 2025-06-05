@@ -7,7 +7,7 @@ async def play_audio():
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16, channels=1, rate=8000, output=True)
 
-    async with websockets.connect("wss://carcall.canora.us:9901") as websocket:
+    async with websockets.connect("wss://carcall.canora.us/ws1") as websocket:
         print("Connected to server")
         async for message in websocket:
             stream.write(message)

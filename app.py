@@ -12,7 +12,6 @@ pi_clients = set()
 
 @app.route("/twiml", methods=["POST"])
 def twiml():
-    # You can customize the TwiML here dynamically if needed
     twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Start>
@@ -27,8 +26,9 @@ def twiml():
 
 # -------- WebSocket Server Stuff -------- #
 
-# Handle connections from Raspberry Pi clients
 async def handle_pi(websocket, path):
+    if not path.startswith('/ws1'):
+        return  # Reject connections to other paths
     print("Pi connected")
     pi_clients.add(websocket)
     try:
@@ -37,8 +37,9 @@ async def handle_pi(websocket, path):
         print("Pi disconnected")
         pi_clients.remove(websocket)
 
-# Handle incoming Twilio media stream
 async def handle_twilio(websocket, path):
+    if not path.startswith('/ws2'):
+        return  # Reject connections to other paths
     print("Twilio stream connected")
     try:
         async for message in websocket:
@@ -58,8 +59,8 @@ async def handle_twilio(websocket, path):
 
 # Start both WebSocket servers
 async def start_websocket_servers():
-    server = await websockets.serve(handle_twilio, "0.0.0.0", 9902, path="/ws2")
-    pi_server = await websockets.serve(handle_pi, "0.0.0.0", 9901, path="/ws1")
+    server = await websockets.serve(handle_twilio, "0.0.0.0", 9902)
+    pi_server = await websockets.serve(handle_pi, "0.0.0.0", 9901)
     await asyncio.gather(server.wait_closed(), pi_server.wait_closed())
 
 def run_websocket_servers():
